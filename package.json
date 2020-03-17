@@ -1,0 +1,30 @@
+{
+  "name": "interval-timer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gladunvv/interval-timer.git"
+  },
+  "keywords": [
+    "node.js",
+    "http",
+    "lofschool"
+  ],
+  "author": "Gladun Vladislav",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gladunvv/interval-timer/issues"
+  },
+  "homepage": "https://github.com/gladunvv/interval-timer#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0"
+  }
+}
