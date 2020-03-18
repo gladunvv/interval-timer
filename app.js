@@ -7,17 +7,23 @@ const INTERVAL = process.env.INTERVAL || 1000;
 const TIMEOUT = process.env.TIMEOUT || 5000;
 
 const server = http.createServer((req, res) => {
-  res.writeHeader(200, { 'Content-Type': 'text/html' });
-  let nowTime = setInterval(() => {
-    let now = new Date().toUTCString();
-    console.log('Now :', now);
-    res.write(`<p>${now}</p>`)
-  }, INTERVAL);
+  if (req.url === '/') {
+    res.writeHeader(200, { 'Content-Type': 'text/html' });
+    let now = () => {
+      return new Date().toUTCString();
+    };
+    console.log('Request time: ', now());
 
-  setTimeout(() => {
-    clearInterval(nowTime);
-    res.end()
-  }, TIMEOUT);
+    let nowTime = setInterval(() => {
+      console.log('Tick: ', now());
+      res.write(`<p>${now()}</p>`);
+    }, INTERVAL);
+
+    setTimeout(() => {
+      clearInterval(nowTime);
+      res.end(`Timer stop: ${now()}`);
+    }, TIMEOUT);
+  }
 });
 
 server.listen(PORT, err => {
