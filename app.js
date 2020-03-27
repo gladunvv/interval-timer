@@ -3,26 +3,33 @@ const http = require('http');
 require('dotenv').config();
 
 const PORT = process.env.PORT || 5000;
-const INTERVAL = process.env.INTERVAL || 1000;
-const TIMEOUT = process.env.TIMEOUT || 5000;
+const INTERVAL = process.env.INTERVAL || 1;
+const TIMEOUT = process.env.TIMEOUT || 5;
 
-const server = http.createServer((req, res) => {
-  if (req.url === '/') {
-    res.writeHeader(200, { 'Content-Type': 'text/html' });
-    let now = () => {
-      return new Date().toUTCString();
-    };
-    console.log('Request time: ', now());
+let requests = [];
+let counter = 0;
+let interval;
 
-    let nowTime = setInterval(() => {
-      console.log('Tick: ', now());
-      res.write(`<p>${now()}</p>`);
-    }, INTERVAL);
+let nowTime = () => {
+  return new Date().toUTCString();
+};
 
-    setTimeout(() => {
-      clearInterval(nowTime);
-      res.end(`Timer stop: ${now()}`);
-    }, TIMEOUT);
+function logRequests(resolve) {
+  requests.push(resolve);
+  if (interval) return;
+  interval = setInterval(() => {
+    if (!requests.length) return (interval = clearInterval(interval));
+    console.log(`Tick: ${nowTime()}`);
+    counter = ++counter % TIMEOUT;
+    if (!counter) requests.shift()(`\nTimer stop at ${nowTime()}`);
+  }, INTERVAL * 1000);
+}
+
+const server = http.createServer(async (req, res) => {
+  if (req.method === 'GET') {
+    res.setHeader('Content-Type', 'application/json', 'utf-8');
+    res.write(`Timer start at ${nowTime()}`);
+    res.write(await new Promise(logRequests));
   }
 });
 
